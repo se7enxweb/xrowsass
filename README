@@ -1,0 +1,11 @@
+xrow Sass is a clone of eZJscorePacker template operator
+
+Use these functions according to eZJscore extension:
+- xrowsass
+- xrowsass_require
+- xrowsass_load
+- xrowsassfiles
+
+Used Compiler
+https://github.com/richthegeek/phpsass
+A compiler for SASS/SCSS written in PHP, brought up to date (approx 3.2) from a fork of PHamlP: http://code.google.com/p/phamlp/

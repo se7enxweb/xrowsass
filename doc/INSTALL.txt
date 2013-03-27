@@ -1,0 +1,23 @@
+How to use xrowsass:
+
+1. Add the extension. Activate it in site.ini. You need the ezjscore extension.
+
+2. Regenerate autoloads.
+
+4. Clear cache ;-)
+
+Docu for sass-language: http://sass-lang.com/
+
+=============
+
+You can combine scss, sass and css files.
+
+Use it like this:
+
+{xrowsass_require(array('test1.scss'))}
+
+{xrowsass_load(array('test1.scss', 'test2.scss', 'test4.sass', 'test3.css'))}
+
+{xrowsass(array('test1.scss', 'test2.scss', 'test4.sass', 'test3.css'))}
+
+{xrowsass_files(array('test1.scss', 'test2.scss', 'test4.sass', 'test3.css'))}
