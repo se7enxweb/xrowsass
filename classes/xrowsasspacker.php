@@ -378,7 +378,8 @@ class xrowsasspacker
 
         // Merge file content and create new cache file
         $content = '';
-        $isCSS = strpos( $data['file_extension'], '.css' ) !== false;
+        #$isCSS = strpos( $data['file_extension'], '.css' ) !== false;
+        $isCSS = true;
         $sass_file_array=array();
         foreach( $data['locale'] as $i => $file )
         {
