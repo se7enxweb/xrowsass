@@ -126,7 +126,7 @@ class xrowsasspacker
         {
             $fileArray = array( $fileArray );
         }
-
+        $isCSS = true;
         $ezjscINI    = eZINI::instance( 'ezjscore.ini' );
         $bases       = eZTemplateDesignResource::allDesignBases();
         $customHosts = $ezjscINI->variable( 'Packer', 'CustomHosts' );
