@@ -126,7 +126,7 @@ class xrowsasspacker
         {
             $fileArray = array( $fileArray );
         }
-        $isCSS = true;
+
         $ezjscINI    = eZINI::instance( 'ezjscore.ini' );
         $bases       = eZTemplateDesignResource::allDesignBases();
         $customHosts = $ezjscINI->variable( 'Packer', 'CustomHosts' );
@@ -328,7 +328,7 @@ class xrowsasspacker
                 }
             }
             
-            $clusterFileHandler->fileStoreContents( $data['cache_path'], $content, 'ezjscore', $isCSS ? 'text/css' : 'text/javascript' );
+            $clusterFileHandler->fileStoreContents( $data['cache_path'], $content, 'ezjscore', 'text/css' );
             $data['http'][] = $data['custom_host'] . $data['www_dir'] . $data['cache_path'];
             
             self::$log[] = $data;
@@ -433,7 +433,7 @@ class xrowsasspacker
         }
 
         // Save cache file and return path
-        $clusterFileHandler->fileStoreContents( $data['cache_path'], $content, 'ezjscore', $isCSS ? 'text/css' : 'text/javascript' );
+        $clusterFileHandler->fileStoreContents( $data['cache_path'], $content, 'ezjscore', 'text/css');
         $data['http'][] = $data['custom_host'] . $data['www_dir'] . $data['cache_path'];
 
         self::$log[] = $data;
