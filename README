@@ -9,3 +9,8 @@ Use these functions according to eZJscore extension:
 Used Compiler
 https://github.com/richthegeek/phpsass
 A compiler for SASS/SCSS written in PHP, brought up to date (approx 3.2) from a fork of PHamlP: http://code.google.com/p/phamlp/
+
+optional
+The packer generates a copy of the packed file which has a static filename
+This could be useful for providing the css-file for external services.
+path: example.com/var/cache/public/<siteaccess_name>_packed.css

@@ -283,24 +283,12 @@ class xrowsasspacker
             $sass_file_array=array();
             foreach( $data['locale'] as $i => $file )
             {
-                // if this is a js / css generator, call to get content
-                if ( $file instanceOf ezjscServerRouter )
-                {
-                    $content .= $file->call( $data['locale'] );
-                    continue;
-                }
-                else if ( !$file )
-                {
-                    continue;
-                }
                 $sass_file_array[]=$file;
             }
             
-            $sassparser = new SassParser();
+            $sassparser = new xrowSassParser();
             $css=$sassparser->toCss($sass_file_array);
             $content=$css;
-            
-            
             
             if ( $ezjscINI->variable( 'Packer', 'AppendLastModifiedTime' ) === 'enabled' )
             {
@@ -327,6 +315,7 @@ class xrowsasspacker
                     return $data['http'];
                 }
             }
+            $clusterFileHandler->fileStoreContents( $static_filepath, $content, 'ezjscore', 'text/css');
             
             $clusterFileHandler->fileStoreContents( $data['cache_path'], $content, 'ezjscore', 'text/css' );
             $data['http'][] = $data['custom_host'] . $data['www_dir'] . $data['cache_path'];
@@ -349,13 +338,16 @@ class xrowsasspacker
             return array_merge( $data['http'], $data['www'] );
         }
 
+        $siteaccess = eZSys::indexDir();
+        
         // See if cahe file exists and if it has expired (only if time is not part of name)
         if ( $ezjscINI->variable( 'Packer', 'AppendLastModifiedTime' ) === 'enabled' )
         {
             $data['cache_hash'] = md5( $data['cache_name'] . $data['pack_level'] ). '_' . $data['last_modified'] . $data['file_extension'];
             $data['cache_path'] = $data['cache_dir'] . $subPath . $data['cache_hash'];
+            $static_filepath = str_replace( '//', '/', $data['cache_dir'] . $subPath . $siteaccess . "_packed.css" );
             $clusterFileHandler = eZClusterFileHandler::instance( $data['cache_path'] );
-            if ( $clusterFileHandler->fileExists( $data['cache_path'] ) )
+            if ( $clusterFileHandler->fileExists( $data['cache_path'] ) && $clusterFileHandler->fileExists( $static_filepath ))
             {
                 $data['http'][] = $data['custom_host'] . $data['www_dir'] . $data['cache_path'];
                 self::$log[] = $data;
@@ -366,9 +358,10 @@ class xrowsasspacker
         {
             $data['cache_hash'] = md5( $data['cache_name'] . $data['pack_level'] ). $data['file_extension'];
             $data['cache_path'] = $data['cache_dir'] . $subPath . $data['cache_hash'];
+            $static_filepath = str_replace( '//', '/', $data['cache_dir'] . $subPath . $siteaccess . "_packed.css" );
             $clusterFileHandler = eZClusterFileHandler::instance( $data['cache_path'] );
             // Check last modified time and return path to cache file if valid
-            if ( $clusterFileHandler->fileExists( $data['cache_path'] ) && $data['last_modified'] <= $clusterFileHandler->mtime( $data['cache_path'] ) )
+            if ( $clusterFileHandler->fileExists( $data['cache_path'] ) && $clusterFileHandler->fileExists( $static_filepath ) && $data['last_modified'] <= $clusterFileHandler->mtime( $data['cache_path'] ) && $data['last_modified'] <= $clusterFileHandler->mtime( $static_filepath ) )
             {
                 $data['http'][] = $data['custom_host'] . $data['www_dir'] . $data['cache_path'];
                 self::$log[] = $data;
@@ -378,48 +371,15 @@ class xrowsasspacker
 
         // Merge file content and create new cache file
         $content = '';
-        #$isCSS = strpos( $data['file_extension'], '.css' ) !== false;
+
         $isCSS = true;
         $sass_file_array=array();
         foreach( $data['locale'] as $i => $file )
         {
-            // if this is a js / css generator, call to get content
-            if ( $file instanceOf ezjscServerRouter )
-            {
-                $content .= $file->call( $data['locale'] );
-                continue;
-            }
-            else if ( !$file )
-            {
-                continue;
-            }
-
-            // else, get content of normal file
-            $fileContent = file_get_contents( $file );
-            
             $sass_file_array[]=$file;
-            
-            if ( !trim( $fileContent ) )
-            {
-                $content .= "/* empty: $file */\r\n";
-                continue;
-            }
-            
-            if ( $isCSS )
-            {
-                // We need to fix relative background image paths if this is a css file
-                $fileContent = xrowsasspacker::fixImgPaths( $fileContent, $file );
-                // Remove @charset if this is not the first file (some browsers will ignore css after a second occurance of this)
-                if ( $i ) $fileContent = preg_replace('/^@charset[^;]+;/i', '', $fileContent);
-            }
-
-            $content .= "/* start: $file */\r\n";
-            $content .= $fileContent;
-            $content .= "\r\n/* end: $file */\r\n\r\n";
-            
         }
         
-        $sassparser = new SassParser();
+        $sassparser = new xrowSassParser();
         $css=$sassparser->toCss($sass_file_array);
         $content=$css;
         
@@ -431,6 +391,9 @@ class xrowsasspacker
                 $content = call_user_func( array( $optimizer, 'optimize' ), $content, $data['pack_level'] );
             }
         }
+        
+        //generates a cache file with static path for external usage
+        $clusterFileHandler->fileStoreContents( $static_filepath, $content, 'ezjscore', 'text/css');
 
         // Save cache file and return path
         $clusterFileHandler->fileStoreContents( $data['cache_path'], $content, 'ezjscore', 'text/css');
