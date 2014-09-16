@@ -3,11 +3,6 @@
 class xrowSassParser extends SassParser
 {
 
-    public function toCss($source, $isFile = true)
-    {
-        return $this->parse($source, $isFile)->render();
-    }
-
     public function parse($source, $isFile = true)
     {
         if (! $source) {
