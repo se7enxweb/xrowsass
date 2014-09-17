@@ -280,14 +280,8 @@ class xrowsasspacker
         {
             self::$log[] = $data;
             // if packing is disabled, return a new generated file with parsed data
-            $sass_file_array=array();
-            foreach( $data['locale'] as $i => $file )
-            {
-                $sass_file_array[]=$file;
-            }
-            
             $sassparser = new xrowSassParser();
-            $css=$sassparser->toCss($sass_file_array);
+            $css=$sassparser->toCss($data['locale']);
             $content=$css;
             
             if ( $ezjscINI->variable( 'Packer', 'AppendLastModifiedTime' ) === 'enabled' )
@@ -338,7 +332,7 @@ class xrowsasspacker
             return array_merge( $data['http'], $data['www'] );
         }
 
-        $siteaccess = eZSys::indexDir();
+        $siteaccess = $GLOBALS['eZCurrentAccess'];
         
         // See if cahe file exists and if it has expired (only if time is not part of name)
         if ( $ezjscINI->variable( 'Packer', 'AppendLastModifiedTime' ) === 'enabled' )
@@ -347,7 +341,7 @@ class xrowsasspacker
             $data['cache_path'] = $data['cache_dir'] . $subPath . $data['cache_hash'];
             $static_filepath = str_replace( '//', '/', $data['cache_dir'] . $subPath . $siteaccess . "_packed.css" );
             $clusterFileHandler = eZClusterFileHandler::instance( $data['cache_path'] );
-            if ( $clusterFileHandler->fileExists( $data['cache_path'] ) && $clusterFileHandler->fileExists( $static_filepath ))
+            if ( $clusterFileHandler->fileExists( $data['cache_path'] ) )
             {
                 $data['http'][] = $data['custom_host'] . $data['www_dir'] . $data['cache_path'];
                 self::$log[] = $data;
@@ -361,7 +355,7 @@ class xrowsasspacker
             $static_filepath = str_replace( '//', '/', $data['cache_dir'] . $subPath . $siteaccess . "_packed.css" );
             $clusterFileHandler = eZClusterFileHandler::instance( $data['cache_path'] );
             // Check last modified time and return path to cache file if valid
-            if ( $clusterFileHandler->fileExists( $data['cache_path'] ) && $clusterFileHandler->fileExists( $static_filepath ) && $data['last_modified'] <= $clusterFileHandler->mtime( $data['cache_path'] ) && $data['last_modified'] <= $clusterFileHandler->mtime( $static_filepath ) )
+            if ( $clusterFileHandler->fileExists( $data['cache_path'] ) && $data['last_modified'] <= $clusterFileHandler->mtime( $data['cache_path'] ) )
             {
                 $data['http'][] = $data['custom_host'] . $data['www_dir'] . $data['cache_path'];
                 self::$log[] = $data;
@@ -373,14 +367,9 @@ class xrowsasspacker
         $content = '';
 
         $isCSS = true;
-        $sass_file_array=array();
-        foreach( $data['locale'] as $i => $file )
-        {
-            $sass_file_array[]=$file;
-        }
         
         $sassparser = new xrowSassParser();
-        $css=$sassparser->toCss($sass_file_array);
+        $css=$sassparser->toCss($data['locale']);
         $content=$css;
         
         // Pack all files to save bandwidth

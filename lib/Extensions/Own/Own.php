@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../ExtensionInterface.php';
+require_once dirname(__FILE__) . '/../ExtensionInterface.php';
 class Own implements ExtensionInterface
 {
 
@@ -84,7 +84,8 @@ class Own implements ExtensionInterface
         }
     }
 
-    public static function ownDemoFunction(){
+    public static function ownDemoFunction()
+    {
         return new SassString("'This is my own Demo Function'");
     }
 }

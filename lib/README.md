@@ -1,11 +1,7 @@
+#PHPSass [![build status](https://travis-ci.org/richthegeek/phpsass.png)](https://travis-ci.org/richthegeek/phpsass)  [![GiTip donations gladly recieved](https://www.gittip.com/assets/8.0.15/logo.png)](https://www.gittip.com/richthegeek/)
+
 #IMPORTANT NOTICE
-We are evaluating wether to switch to using namespaces for better PSR compliance. To help with this, can you tweet or email me (richthegeek@gmail.com) with which version of PHP you are using.
-
-
-#PHPSass [![build status](https://secure.travis-ci.org/richthegeek/phpsass.png)](https://secure.travis-ci.org/#!/richthegeek/phpsass)
-
-## Try online
-You can compile and compare SCSS against the ruby compiler at <http://phpsass.com/try>
+We will soon be implementing PSR standards, and so compatibility requirements will move to PHP 5.3. A separate branch will be made for older versions, although it may not be updated.
 
 ## About
 This is fork of phamlp primarily for inclusiong as a Drupal pre-processor.

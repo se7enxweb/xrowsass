@@ -1,3 +1,4 @@
+<!-- Just load this in a browser and the tests will run! -->
 <html>
   <head>
     <title>PHamlP Test Suite</title>
@@ -5,10 +6,6 @@
   </head>
   <body>
     <?php
-
-    /**
-     * This file is horrible and not Drupal at all. Forgive me, I did not have time to write concise code.
-     */
 
     /* Testing for Sassy.
      *  Looks in tests* and compiles any .sass/.scss files
@@ -26,7 +23,7 @@
      *  Testing is eased by stripping out all whitespace, which may
      *  introduce bugs of their own.
      */
-    include 'SassParser.php';
+    require 'SassParser.php';
 
     $test_dir = './tests';
 
@@ -60,6 +57,7 @@
     }
 
     function test_files($files, $dir = '.') {
+	  $result = null;
       sort($files);
       foreach ($files as $i => $file) {
         $name = explode('.', $file);
@@ -70,13 +68,13 @@
           try {
             $result = $fn($dir . '/' . $file);
           } catch (Exception $e) {
-            $result = $e->__toString();
+            return $e->__toString();
           }
           file_put_contents('/tmp/scss_test_' . $i, trim($result) . "\n");
         }
       }
 
-      $diff = exec('diff -ibwB /tmp/scss_test_0 /tmp/scss_test_1', $out);
+      exec('diff -ibwB /tmp/scss_test_0 /tmp/scss_test_1', $out);
       if (count($out)) {
         if (isset($_GET['full'])) {
           $out[] = "\n\n\n" . $result;
