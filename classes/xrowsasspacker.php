@@ -332,7 +332,7 @@ class xrowsasspacker
             return array_merge( $data['http'], $data['www'] );
         }
 
-        $siteaccess = $GLOBALS['eZCurrentAccess'];
+        $siteaccess = $GLOBALS['eZCurrentAccess']["name"];
         
         // See if cahe file exists and if it has expired (only if time is not part of name)
         if ( $ezjscINI->variable( 'Packer', 'AppendLastModifiedTime' ) === 'enabled' )
